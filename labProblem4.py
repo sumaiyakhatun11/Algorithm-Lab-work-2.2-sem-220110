@@ -1,31 +1,48 @@
-def maxMinDivideConquer(arr, low, high, count):
-    if low == high:  # Single element
-        count += 1
-        return arr[low], arr[low], count
-    elif high == low + 1:  # Two elements
-        count += 2
-        if arr[low] > arr[high]:
-            return arr[low], arr[high], count
+def find_max_min_dc(arr, left, right):
+    """Finds max and min using Divide and Conquer"""
+    if left == right:
+        return arr[left], arr[left]
+
+    if right == left + 1:
+        if arr[left] < arr[right]:
+            return arr[left], arr[right]
         else:
-            return arr[high], arr[low], count
+            return arr[right], arr[left]
 
-    # Divide the array into halves
-    mid = (low + high) // 2
-    leftMax, leftMin, count = maxMinDivideConquer(arr, low, mid, count)
-    rightMax, rightMin, count = maxMinDivideConquer(arr, mid + 1, high, count)
+    mid = (left + right) // 2
+    min_left, max_left = find_max_min_dc(arr, left, mid)
+    min_right, max_right = find_max_min_dc(arr, mid + 1, right)
 
-    # Combine results
-    finalMax = max(leftMax, rightMax)
-    finalMin = min(leftMin, rightMin)
-    count += 2
-    return finalMax, finalMin, count
+    return min(min_left, min_right), max(max_left, max_right)
 
 
-# Input and execution
-numbers = list(map(int, input("Enter numbers: ").split()))
-if not numbers:
-    print("The array is empty! Please enter valid numbers.")
-else:
-    count = 0
-    maxValue, minValue, totalCount = maxMinDivideConquer(numbers, 0, len(numbers) - 1, count)
-    print(f"Max value: {maxValue}, Min value: {minValue}, Steps (Order of n): {totalCount}")
+def find_max_min_normal(arr):
+    """Finds max and min using Normal Iterative Approach"""
+    minimum = maximum = arr[0]
+    for num in arr:
+        if num < minimum:
+            minimum = num
+        elif num > maximum:
+            maximum = num
+    return minimum, maximum
+
+
+def main():
+    arr = list(map(int, input('Enter numbers: ').split()))
+    choice = int(input("Enter choice:\n1. Divide and Conquer\n2. Normal Approach\n"))
+
+    if choice == 1:
+        minimum, maximum = find_max_min_dc(arr, 0, len(arr) - 1)
+        print("Using Divide and Conquer:")
+    elif choice == 2:
+        minimum, maximum = find_max_min_normal(arr)
+        print("Using Normal Approach:")
+    else:
+        print("Invalid choice!")
+        return
+
+    print(f'Minimum: {minimum}, Maximum: {maximum}')
+
+
+# Execute main function
+main()
